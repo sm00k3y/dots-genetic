@@ -26,7 +26,8 @@ def main_loop():
                 game_loop = False
 
         for dot in dots:
-            dot.move()
+            if not dot.is_dead:
+                dot.move()
 
         draw_window(screen, dots)
         clock.tick(FPS)
