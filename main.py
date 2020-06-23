@@ -1,5 +1,6 @@
 import pygame
-from dot import Dot
+from population import Population
+from goal import Goal
 
 WIDTH = 800
 HEIGHT = 800
@@ -15,9 +16,8 @@ def main_loop():
     clock = pygame.time.Clock()
     game_loop = True
 
-    dots = []
-    for i in range(100):
-        dots.append(Dot(WIDTH//2, HEIGHT//2))
+    dots = Population(100)
+    goal = Goal(int(WIDTH / 2), 20)
 
     while game_loop:
 
@@ -25,18 +25,16 @@ def main_loop():
             if event.type == pygame.QUIT:
                 game_loop = False
 
-        for dot in dots:
-            if not dot.is_dead:
-                dot.move()
+        dots.update(WIDTH, HEIGHT)
 
-        draw_window(screen, dots)
+        draw_window(screen, dots, goal)
         clock.tick(FPS)
 
 
-def draw_window(screen, dots):
+def draw_window(screen, dots, goal):
     screen.fill(COLOR_WHITE)
-    for dot in dots:
-        dot.draw(screen)
+    dots.draw(screen)
+    goal.draw(screen)
     pygame.display.update()
 
 
