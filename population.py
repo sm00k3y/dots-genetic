@@ -37,7 +37,11 @@ class Population():
             parent1 = self.select_parent()
             parent2 = self.select_parent()
             # get baby from parent and mutate
-            new.cross_over(parent1, parent2)
+            # new.cross_over(parent1, parent2)
+            # new.cross_over2(parent1, parent2)
+            new.cross_over3(parent1, parent2)
+            # new.copy(parent1)
+            new.brain.mutate()
 
         self.dots = new_dots
         self.generation += 1
@@ -53,6 +57,3 @@ class Population():
                 return dot
 
         return None
-
-    def mutate_those_babies(self):
-        pass
