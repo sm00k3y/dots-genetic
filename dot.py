@@ -11,17 +11,14 @@ Y_VEL = 1
 INITIAL_X = 400
 INITIAL_Y = 750
 
-BRAIN_SIZE = 400
-MUTATION_RATE = 0.015
-
 
 class Dot():
 
-    def __init__(self):
+    def __init__(self, brain_size):
         self.pos = np.array([INITIAL_X, INITIAL_Y])
         self.vel = np.array([X_VEL, Y_VEL])
         self.acc = np.array([0, 0])
-        self.brain = Brain(BRAIN_SIZE, MUTATION_RATE)
+        self.brain = Brain(brain_size)
         self.step_counter = 0
         self.is_dead = False
         self.reached_goal = False
@@ -72,7 +69,7 @@ class Dot():
     def cross_over(self, parent1, parent2):
         point = parent1.fitness / (parent1.fitness + parent2.fitness)
 
-        for i in range(BRAIN_SIZE):
+        for i in range(self.brain.size):
             rand = random.random()
             if rand < point:
                 self.brain.movement_vector[i] = parent1.brain.movement_vector[i]

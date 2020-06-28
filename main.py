@@ -10,6 +10,9 @@ HEIGHT = 800
 FPS = 30
 BG_COLOR = (255, 255, 255)
 
+BRAIN_SIZE = 400
+MUTATION_RATE = 0.015
+
 
 def main_loop():
 
@@ -22,9 +25,9 @@ def main_loop():
     gen_rect = generation.get_rect()
     gen_rect.center = (WIDTH - 90, 15)
 
-    dots = Population(400)
+    dots = Population(400, BRAIN_SIZE)
     goal = Goal(int(WIDTH / 2), 20)
-    obstacles = Obstacle_Generator(level=3)
+    obstacles = Obstacle_Generator(level=2)
 
     while game_loop:
 
@@ -34,7 +37,7 @@ def main_loop():
 
         if dots.all_dead():
             dots.calculate_fitness(goal)
-            dots.natural_selection()
+            dots.natural_selection(BRAIN_SIZE, MUTATION_RATE)
             generation = font.render("Population: {}".format(dots.generation), True, (0, 0, 0))
         else:
             dots.update(WIDTH, HEIGHT, goal, obstacles)

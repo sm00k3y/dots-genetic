@@ -4,12 +4,12 @@ import random
 
 class Population():
 
-    def __init__(self, num_of_dots):
+    def __init__(self, num_of_dots, brain_size):
         self.num_of_dots = num_of_dots
-        self.dots = [Dot() for _ in range(num_of_dots)]
+        self.dots = [Dot(brain_size) for _ in range(num_of_dots)]
         self.generation = 1
         self.fitness_sum = 0
-        self.max_steps = self.dots[0].brain.size - 1
+        self.max_steps = brain_size - 1
 
     def update(self, win_width, win_height, goal, obstacles):
         for dot in self.dots:
@@ -31,8 +31,8 @@ class Population():
                 return False
         return True
 
-    def natural_selection(self):
-        new_dots = [Dot() for _ in range(self.num_of_dots - 1)]
+    def natural_selection(self, brain_size, mutation_rate):
+        new_dots = [Dot(brain_size) for _ in range(self.num_of_dots - 1)]
 
         for new in new_dots:
             # select parent based on fitness
@@ -40,9 +40,9 @@ class Population():
             parent2 = self.select_parent()
             # get baby from parents and mutate
             new.cross_over(parent1, parent2)
-            new.brain.mutate()
+            new.brain.mutate(mutation_rate)
 
-        best_dot = Dot()
+        best_dot = Dot(brain_size)
         best_dot.brain.copy(self.best_dot().brain)
         best_dot.is_best = True
         new_dots.append(best_dot)
