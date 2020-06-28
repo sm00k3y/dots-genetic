@@ -17,7 +17,7 @@ def main_loop():
     clock = pygame.time.Clock()
     game_loop = True
 
-    dots = Population(200)
+    dots = Population(400)
     goal = Goal(int(WIDTH / 2), 20)
 
     generation = font.render("Population: 1", True, (0, 0, 0))

@@ -4,6 +4,7 @@ from brain import Brain
 import random
 
 BLACK = (0, 0, 0)
+GREEN = (0, 255, 0)
 RADIUS = 3
 X_VEL = 1
 Y_VEL = 1
@@ -11,7 +12,7 @@ INITIAL_X = 400
 INITIAL_Y = 750
 
 BRAIN_SIZE = 400
-MUTATION_RATE = 0.02
+MUTATION_RATE = 0.015
 
 
 class Dot():
@@ -25,6 +26,7 @@ class Dot():
         self.is_dead = False
         self.reached_goal = False
         self.fitness = 0
+        self.is_best = False
 
     def move(self):
         self.acc = self.brain.step(self.step_counter)
@@ -45,38 +47,26 @@ class Dot():
                 self.reached_goal = True
 
     def draw(self, window):
-        pygame.draw.circle(window, BLACK, self.pos, RADIUS)
+        if self.is_best:
+            pygame.draw.circle(window, GREEN, self.pos, RADIUS+1)
+        else:
+            pygame.draw.circle(window, BLACK, self.pos, RADIUS)
 
     def calculate_fitness(self, goal):
-        dist_to_goal = np.linalg.norm(self.pos - goal.pos, ord=2)
-        # dist_to_goal = math.sqrt((self.pos[0] - goal.pos[0])**2 + (self.pos[1] - goal.pos[1])**2)  # import math
-        self.fitness = 1.0 / (dist_to_goal**2)
+        if self.reached_goal:
+            # self.fitness = 1.0/16.0 + 10000/(self.step_counter**2)
+            self.fitness = 10000/(self.step_counter**2)
+        else:
+            dist_to_goal = np.linalg.norm(self.pos - goal.pos, ord=2)
+            # dist_to_goal = math.sqrt((self.pos[0] - goal.pos[0])**2 + (self.pos[1] - goal.pos[1])**2)  # import math
+            self.fitness = 1.0 / (dist_to_goal**2)
 
     def cross_over(self, parent1, parent2):
-        for i in range(BRAIN_SIZE):
-            rand = random.random()
-
-            if rand < 0.45:
-                self.brain.movement_vector[i] = parent1.brain.movement_vector[i]
-            elif rand < 0.90:
-                self.brain.movement_vector[i] = parent2.brain.movement_vector[i]
-            else:
-                self.brain.movement_vector[i] = [random.randrange(-5, 6), random.randrange(-5, 6)]
-
-    def cross_over2(self, parent1, parent2):
-        for i in range(BRAIN_SIZE):
-            self.brain.movement_vector[i] = (parent1.brain.movement_vector[i] + parent2.brain.movement_vector[i]) / 2
-
-    def cross_over3(self, parent1, parent2):
         point = parent1.fitness / (parent1.fitness + parent2.fitness)
 
         for i in range(BRAIN_SIZE):
             rand = random.random()
-
             if rand < point:
                 self.brain.movement_vector[i] = parent1.brain.movement_vector[i]
             else:
                 self.brain.movement_vector[i] = parent2.brain.movement_vector[i]
-
-    def copy(self, parent):
-        self.brain.copy(parent.brain)

@@ -22,6 +22,12 @@ class Population():
         for dot in self.dots:
             dot.calculate_fitness(goal)
             self.fitness_sum += dot.fitness
+            rand = random.random()
+            if rand < 0.05:
+                if dot.reached_goal:
+                    print("Dot reached: ", dot.fitness)
+                else:
+                    print(dot.fitness)
 
     def all_dead(self):
         for dot in self.dots:
@@ -30,18 +36,20 @@ class Population():
         return True
 
     def natural_selection(self):
-        new_dots = [Dot() for _ in range(self.num_of_dots)]
+        new_dots = [Dot() for _ in range(self.num_of_dots - 1)]
 
         for new in new_dots:
             # select parent based on fitness
             parent1 = self.select_parent()
             parent2 = self.select_parent()
-            # get baby from parent and mutate
-            # new.cross_over(parent1, parent2)
-            # new.cross_over2(parent1, parent2)
-            new.cross_over3(parent1, parent2)
-            # new.copy(parent1)
+            # get baby from parents and mutate
+            new.cross_over(parent1, parent2)
             new.brain.mutate()
+
+        best_dot = Dot()
+        best_dot.brain.copy(self.best_dot().brain)
+        best_dot.is_best = True
+        new_dots.append(best_dot)
 
         self.dots = new_dots
         self.generation += 1
@@ -57,3 +65,12 @@ class Population():
                 return dot
 
         return None
+
+    def best_dot(self):
+        max_fitness = 0.0
+        best_dot = None
+        for dot in self.dots:
+            if dot.fitness > max_fitness:
+                max_fitness = dot.fitness
+                best_dot = dot
+        return best_dot
