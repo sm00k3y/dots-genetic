@@ -1,6 +1,7 @@
 import pygame
 from population import Population
 from goal import Goal
+from obstacle import Obstacle_Generator
 
 pygame.init()
 
@@ -17,12 +18,13 @@ def main_loop():
     clock = pygame.time.Clock()
     game_loop = True
 
-    dots = Population(400)
-    goal = Goal(int(WIDTH / 2), 20)
-
     generation = font.render("Population: 1", True, (0, 0, 0))
     gen_rect = generation.get_rect()
     gen_rect.center = (WIDTH - 90, 15)
+
+    dots = Population(400)
+    goal = Goal(int(WIDTH / 2), 20)
+    obstacles = Obstacle_Generator(level=3)
 
     while game_loop:
 
@@ -35,14 +37,15 @@ def main_loop():
             dots.natural_selection()
             generation = font.render("Population: {}".format(dots.generation), True, (0, 0, 0))
         else:
-            dots.update(WIDTH, HEIGHT, goal)
-            draw_window(screen, dots, goal, generation, gen_rect)
+            dots.update(WIDTH, HEIGHT, goal, obstacles)
+            draw_window(screen, dots, goal, obstacles, generation, gen_rect)
 
         clock.tick(FPS)
 
 
-def draw_window(screen, dots, goal, generation, gen_rect):
+def draw_window(screen, dots, goal, obstacles, generation, gen_rect):
     screen.fill(BG_COLOR)
+    obstacles.draw(screen)
     goal.draw(screen)
     dots.draw(screen)
     screen.blit(generation, gen_rect)

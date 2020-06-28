@@ -31,8 +31,6 @@ class Dot():
     def move(self):
         self.acc = self.brain.step(self.step_counter)
         self.step_counter += 1
-        # if self.step_counter >= BRAIN_SIZE:
-            # self.is_dead = True
         self.vel += self.acc
         self.vel = np.clip(self.vel, -5, 5)
         self.pos += self.vel
@@ -46,6 +44,14 @@ class Dot():
             elif np.linalg.norm(self.pos - goal.pos, ord=2) < goal.radius:
                 self.reached_goal = True
             elif self.step_counter > max_steps:
+                self.is_dead = True
+
+    def update_obstacles(self, obstacles):
+        for obs in obstacles.get_obstacles():
+            if self.pos[0] + RADIUS >= obs.rect.x \
+               and self.pos[0] - RADIUS <= obs.rect.x + obs.rect.width \
+               and self.pos[1] + RADIUS >= obs.rect.y \
+               and self.pos[1] - RADIUS <= obs.rect.y + obs.rect.height:
                 self.is_dead = True
 
     def draw(self, window):

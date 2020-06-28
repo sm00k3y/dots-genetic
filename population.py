@@ -11,9 +11,10 @@ class Population():
         self.fitness_sum = 0
         self.max_steps = self.dots[0].brain.size - 1
 
-    def update(self, win_width, win_height, goal):
+    def update(self, win_width, win_height, goal, obstacles):
         for dot in self.dots:
             dot.update(win_width, win_height, goal, self.max_steps)
+            dot.update_obstacles(obstacles)
 
     def draw(self, window):
         for dot in self.dots:
