@@ -31,13 +31,13 @@ class Dot():
     def move(self):
         self.acc = self.brain.step(self.step_counter)
         self.step_counter += 1
-        if self.step_counter >= BRAIN_SIZE:
-            self.is_dead = True
+        # if self.step_counter >= BRAIN_SIZE:
+            # self.is_dead = True
         self.vel += self.acc
         self.vel = np.clip(self.vel, -5, 5)
         self.pos += self.vel
 
-    def update(self, win_width, win_height, goal):
+    def update(self, win_width, win_height, goal, max_steps):
         if not self.is_dead and not self.reached_goal:
             self.move()
             if self.pos[0] <= RADIUS or self.pos[0] + RADIUS >= win_width \
@@ -45,6 +45,8 @@ class Dot():
                 self.is_dead = True
             elif np.linalg.norm(self.pos - goal.pos, ord=2) < goal.radius:
                 self.reached_goal = True
+            elif self.step_counter > max_steps:
+                self.is_dead = True
 
     def draw(self, window):
         if self.is_best:

@@ -9,10 +9,11 @@ class Population():
         self.dots = [Dot() for _ in range(num_of_dots)]
         self.generation = 1
         self.fitness_sum = 0
+        self.max_steps = self.dots[0].brain.size - 1
 
     def update(self, win_width, win_height, goal):
         for dot in self.dots:
-            dot.update(win_width, win_height, goal)
+            dot.update(win_width, win_height, goal, self.max_steps)
 
     def draw(self, window):
         for dot in self.dots:
@@ -22,12 +23,6 @@ class Population():
         for dot in self.dots:
             dot.calculate_fitness(goal)
             self.fitness_sum += dot.fitness
-            rand = random.random()
-            if rand < 0.05:
-                if dot.reached_goal:
-                    print("Dot reached: ", dot.fitness)
-                else:
-                    print(dot.fitness)
 
     def all_dead(self):
         for dot in self.dots:
@@ -73,4 +68,6 @@ class Population():
             if dot.fitness > max_fitness:
                 max_fitness = dot.fitness
                 best_dot = dot
+        if best_dot.reached_goal:
+            self.max_steps = best_dot.step_counter
         return best_dot
